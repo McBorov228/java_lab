@@ -1,0 +1,182 @@
+= Отчет по лабораторной работе №1
+Студент группы ПИМ-21 Петров Д.Д.
+:example-caption: Структура
+:listing-caption: Листинг
+:source-highlighter: coderay
+
+== 1 Цель и постановка задачи
+В ходе выполнения лабораторной работы №1 необходимо выполнить:
+
+. Создать исполняемый java класс, который выводит строку на экран.
+. Разработать два класса. Первый класс выводит на экран строку и строку из второго класса.
+. Создать jar-файл, хранящий элементы из предыдущего задания.
+
+== 2 Разработка
+
+=== 2.1 Структура проекта
+
+.Структура проекта первого задания
+===============
+----
+|-- classes
+|   `--mypackage
+|      `-- HelloWorld.class
+`-- src
+    `-- main
+        `-- java
+            `-- mypackage
+                `-- HelloWorld.java
+----
+===============
+
+.Структура проекта второго задания
+===============
+----
+|-- classes
+|   |-- mypackage
+|   |   `-- HelloWorld.class
+|   `-- newpackage
+|       `-- Test.class
+`-- src
+    `-- main
+        `-- java
+            |-- mypackage
+            |   `-- HelloWorld.java
+            `-- newpackage
+              `-- Test.java
+
+----
+===============
+
+.Структура проекта третьего задания
+===============
+----
+|-- project.jar
+|-- minifest.mf
+|-- classes
+|   |-- mypackage
+|   |   `-- HelloWorld.class
+|   `-- newpackage
+|       `-- Test.class
+`-- src
+    `-- main
+        `-- java
+            |-- mypackage
+            |   `-- HelloWorld.java
+            `-- newpackage
+              `-- Test.java
+----
+===============
+
+=== 2.2 Задание 1
+Сначала были созданы необходимые дирректории и был создан исполняемый класс HelloWorld.
+
+.Листинг класса HelloWorld
+[source, java]
+----
+package mypackage;
+
+public class HelloWorld {
+
+  public static void main(String args[]) {
+     String str = "My world";
+     System.out.println(str);
+  }
+
+}
+----
+
+Для компиляции файла в командной строке использовалась команда javac.
+
+.Команда javac
+----
+javac -classpath ./classes -d ./classes src/main/java/mypackage/HelloWorld.java
+----
+
+Для запуска файла в командной строке использовалась команда java.
+
+.Команда java
+----
+java -classpath ./classes mypackage.HelloWorld
+----
+
+При запуске скомпилированного файла в командной строке выводится строка "My world".
+
+=== 2.3 Задание 2
+К уже созданным директориям была добавлена еще одна и в созданной директории был создан дополнительный класс Test, хранящий текстовую строку "No!".
+Для вывода нового сообщения класс HelloWorld был изменен.
+
+.Листинг класса Test
+[source, java]
+----
+package newpackage;
+
+public class Test {
+
+  private String NEW_STR = "";
+
+  public Test() {
+    this.NEW_STR = "No!";
+  }
+
+  public String getNewStr() {
+    return NEW_STR;
+  }
+
+}
+----
+
+.Листинг класса HelloWorld
+[source, java]
+----
+package mypackage;
+
+import newpackage.Test;
+
+public class HelloWorld {
+
+  public static void main(String args[]) {
+     String str = "My world";
+     Test test = new Test();
+     System.out.println(str.concat(test.getNewStr()));
+  }
+
+}
+----
+Далее с помощью команды javac данные файлы были скомпилированы. Файл HelloWorld был запущен командой java. При запуске программы в командной строке выводится строка "My worldNo!".
+
+=== 2.3 Задание 3
+Был создан файл manifest.mf, в котором указан главный исполняемый класс HelloWorld.
+
+.Листинг Manifest.mf
+[source, java]
+----
+Manifest-Version: 1.0
+Created-By: 1.6.0_19 (Sun Microsystems Inc.)
+Main-Class: mypackage.HelloWorld
+
+----
+
+После этого была выполнена команда по сборке архива jar и запуск jar-файла.
+
+.Команда по сборке архива
+----
+jar cvmf manifest.mf project.jar -C ./classes mypackage -C ./classes newpackage
+----
+
+.Команда запуска jar-файла
+----
+java -jar project.jar
+----
+При запуске архива в командной строке выводится строка "My worldNo!".
+
+== 3 Результат разработки
+
+В результате выполнения первого задания был получен класс HelloWorld. При запуске выводится строка "My world".
+
+В результате выполнения второго задания были получены классы Test и HelloWorld. При запуске HelloWorld выводится строка "My worldNo!".
+
+В результате выполнения третьего задания был получен jar-файл project. При запуске jar-файла выводится строка "My worldNo!".
+
+== Вывод
+В результате выполнения лабораторной работы мы узнали как работать в командной строке с командами: компиляции классов, запуска проектов, создания jar-файла.
