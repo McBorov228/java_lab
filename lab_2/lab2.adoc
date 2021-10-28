@@ -1,0 +1,144 @@
+= Отчет по лабораторной работе №2
+Студент группы ПИМ-21 Петров Д.Д.
+:example-caption: Структура
+:listing-caption: Листинг
+:source-highlighter: coderay
+
+== 1 Цель и постановка задачи
+В процессе выполнения лабораторной работы необходимо выполнить следующие задачи:
+1. Сделать проект с помощью maven. Добавить в проект зависимость и
+продемонстрировать ее работу;
+2. Добавить jar библиотеку в локальный репозиторий maven. Подключить ее как
+зависимость и продемонстрировать работу;
+3. Сделать родительский проект и два дочерних с помощью maven. Один дочерний
+зависим от другого;
+
+== 2 Разработка
+
+=== 2.1 Создание проекта
+
+Создание проекта в локальном репозитории maven
+
+----
+mvn archetype:generate -DgroupId=org.baeldung -DartifactId=carousel
+----
+
+Далее в pom была добавлена зависимость joda-time (библиотека обработки даты и времени), а также описание:
+
+----
+<artifactId>sample</artifactId>
+<packaging>jar</packaging>
+<version>1.0-SNAPSHOT</version>
+<name>sample</name>
+...
+<dependencies>
+<dependency>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-compiler-plugin</artifactId>
+<version>3.8.1</version>
+</dependency>
+<dependency>
+<groupId>junit</groupId>
+<artifactId>junit</artifactId>
+<version>3.8.1</version>
+<scope>test</scope>
+</dependency>
+<dependency>
+<groupId>joda-time</groupId>
+<artifactId>joda-time</artifactId>
+<version>2.10.11</version>
+</dependency>
+</dependencies>
+----
+
+=== 2.2 Создание и подключение jar библиотеки
+
+В локальном репозитории создана jar библиотека с классом Test:
+
+----
+public class Test
+{
+    private static String str = "Работа с зависимостью из локального репозитория";
+
+    public static String getStr() {
+        return str;
+    }
+}
+----
+
+Далее был создан проект с классом App:
+
+----
+package edu.javacourse;
+
+import org.joda.time.LocalDateTime;
+import ru.carousel.Test;
+
+public class App {
+    public static void main( String[] args )
+    {
+      LocalDateTime dt = new LocalDateTime();
+      System.out.println("Сейчас: " + dt);
+      System.out.println(Test.getStr());
+    }
+}
+----
+
+К проекту была подключена зависимость из локального репозитория maven:
+
+----
+<dependencies>
+    <dependency>
+      <groupId>ru.carousel</groupId>
+      <artifactId>test</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    ...
+  </dependencies>
+----
+
+=== 2.3 Создание дочерних проектов maven
+
+Сначала создаем проект maven командой:
+
+----
+mvn archetype:generate -DgroupId=org.baeldung -DartifactId=parent-project
+----
+
+Далее в новосозданном проекте в файле pom прописываем:
+
+----
+<packaging>pom</packaging>
+----
+
+Затем, аналогично создаем в каталоге ряд проектов:
+
+----
+cd parent-project
+mvn archetype:generate -DgroupId=org.baeldung  -DartifactId=core
+mvn archetype:generate -DgroupId=org.baeldung  -DartifactId=service
+mvn archetype:generate -DgroupId=org.baeldung  -DartifactId=webapp
+----
+
+После в проекте-предке в файле pom прописываем 1ый блок, а в каждом дочернем проекте, что мы до этого создали в каталоге, прописываем второй блок в каждом pom проектов:
+
+----
+<modules>
+    <module>core</module>
+    <module>service</module>
+    <module>webapp</module>
+</modules>
+----
+
+----
+<parent>
+    <groupId>org.baeldung</groupId>
+    <artifactId>parent-project</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</parent>
+----
+
+== Вывод
+В результате выполнения лабораторной работы мы познакомились с maven. Научились
+создавать проект с помощью maven, подключать локальные и внешние зависимости, а
+также создавать зависимости между родительским и дочерними проектами.
